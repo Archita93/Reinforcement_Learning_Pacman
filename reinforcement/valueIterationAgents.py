@@ -19,14 +19,16 @@
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
 # 
-# Attribution Information: The Pacman AI projects were developed at UC Berkeley.
+# The core projects and autograders were primarily created by John DeNero
+# The core projects and autograders were primarily created by John DeNero
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # Student side autograding was added by Brad Miller, Nick Hay, and
-# Pieter Abbeel (pabbeel@cs.berkeley.edu).
+# Pieter Abbeel (pabbeel@cs.berkeley.edu).util
 
 
 import mdp, util
+
 
 from learningAgents import ValueEstimationAgent
 import collections
@@ -47,6 +49,9 @@ class ValueIterationAgent(ValueEstimationAgent):
           and then act according to the resulting policy.
 
           Some useful mdp methods you will use:
+
+
+
               mdp.getStates()
               mdp.getPossibleActions(state)
               mdp.getTransitionStatesAndProbs(state, action)
@@ -56,18 +61,47 @@ class ValueIterationAgent(ValueEstimationAgent):
         self.mdp = mdp
         self.discount = discount
         self.iterations = iterations
+        # Step 1: Initialised the values as 0 for all the possible states
         self.values = util.Counter() # A Counter is a dict with default 0
         self.runValueIteration()
 
     def runValueIteration(self):
-        
         "*** YOUR CODE HERE ***"
+        # Aim: is to update the value of each element 
+        # Write value iteration code here
+       
+        for i in range(0,self.iterations):
+
+            oldValues = util.Counter()
+
+            states = self.mdp.getStates()
+            for state in states:
+
+                # return the best possible q value 
+                bestValue = -9999
+                actions = self.mdp.getPossibleActions(state)
+                for action in actions:
+                    value = self.computeQValueFromValues(state,action)
+                    # print("value: ", value)
+                    if bestValue < value:
+                        bestValue = value
+                    # All the best Values from state to that particular action
+                    # computeActionFRomValues will supposedly be used to find the best action for the 
+                    # bestValues of all the possible actions
+
+                    oldValues[state] = bestValue
+            self.values = oldValues
+
+
+        # util.raiseNotDefined()
+
 
 
     def getValue(self, state):
         """
           Return the value of the state (computed in __init__).
         """
+        # For 100 iterations
         return self.values[state]
 
 
@@ -76,10 +110,23 @@ class ValueIterationAgent(ValueEstimationAgent):
           Compute the Q-value of action in state from the
           value function stored in self.values.
         """
-        # nextState = mdp.MarkovDecisionProcess.getTransitionStatesAndProbs(state,action)[0] 
-        # print(mdp.MarkovDecisionProcess.getTransitionStatesAndProbs(state,action))
-        # qValue = mdp.MarkovDecisionProcess.getReward(state,action,nextState) + mdp.MarkovDecisionProcess.getTransitionStatesAndProbs(state,action)
-        # return qValue
+        "*** YOUR CODE HERE ***"
+        # Q(s,a) = summation(probability((reward from s to s' by taking action a)+discount*(value of next state)))
+        # next state can be obtained using the transition function
+        Q_value = 0
+
+        StatesAndProbs = self.mdp.getTransitionStatesAndProbs(state,action)
+
+        for pairs in StatesAndProbs:
+            
+            probabilities = pairs[1]
+            nextState = pairs[0]
+            rewards = self.mdp.getReward(state,action,nextState)
+
+            Q_value +=  probabilities * (rewards + self.discount*(self.getValue(nextState)))
+        
+        return Q_value
+
         util.raiseNotDefined()
 
     def computeActionFromValues(self, state):
@@ -92,7 +139,30 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # THe best value could be computed using the q-value function 
+        # compute Value = max (q-value)
+        # AIM: to find the action associated with that value
+        bestValue = -99999
+        bestAction = None
+
+        actions = self.mdp.getPossibleActions(state)
+        for action in actions:
+            value = self.computeQValueFromValues(state,action)
+
+            if bestValue < value:
+                bestValue = value
+                bestAction = action
+
+        return bestAction
+            # would be redundant and is not solving the problem, so
+            # for nextState in self.mdp.getTransitionStatesAndProbs(state,actions)[0]:
+            #     if bestValue < self.getValue(nextState):
+            #         bestValue = self.getValue(nextState)
+            #         bestAction = actions
+
+            
+            # print("actions: ",actions)
+        # util.raiseNotDefined()
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
@@ -132,6 +202,39 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
     def runValueIteration(self):
+
+        states = []
+        
+        for i in self.mdp.getStates():
+            states.append(i)
+            values[states[i]] = 0
+
+        for i in range(0,self.iterations):
+            oldValues = util.Counter()
+            bestValue = -9999
+
+            for action in self.mdp.getPossibleActions(states[i]):
+                value = self.computeQValueFromValues(states[i],action)
+
+                if value > bestValue:
+                    bestValue = value
+
+                oldValues[states[i]] = bestValue
+
+            self.values = oldValues
+                # # return the best possible q value 
+                # bestValue = -9999
+                # for action in self.mdp.getPossibleActions(states):
+                #     value = self.computeQValueFromValues(states,action)
+                #     # print("value: ", value)
+                #     if bestValue < value:
+                #         bestValue = value
+                #     # All the best Values from states to that particular action
+                #     # computeActionFRomValues will supposedly be used to find the best action for the 
+                #     # bestValues of all the possible actions
+
+            #         oldValues[states] = bestValue
+            # self.values = oldValues
         "*** YOUR CODE HERE ***"
 
 class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
