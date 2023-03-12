@@ -205,37 +205,25 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
          
         # Do we need to initialise everything to 0 first?
         # index is needed for the circular update in teh iterations 
+       
         states = self.mdp.getStates()
         statesLen = len(states)
-        stateAtIndex = 0
         for i in range(0,self.iterations):
-            print(stateAtIndex)
-            stateAtIndex = states[stateAtIndex % statesLen]
+            stateIndex = i % statesLen
+            state = states[stateIndex]
         
-            if self.mdp.isTerminal(stateAtIndex) == False:
-                legalActions = self.mdp.getPossibleActions(stateAtIndex)
+            if self.mdp.isTerminal(state) == False:
+                legalActions = self.mdp.getPossibleActions(state)
                 bestValue = -9999
                 for action in legalActions:
-                    value = self.computeQValueFromValues(stateAtIndex,action)
+                    value = self.computeQValueFromValues(state,action)
                     if bestValue < value:
                         bestValue = value
                     # All the best Values from state to that particular action
                     # computeActionFRomValues will supposedly be used to find the best action for the 
                     # bestValues of all the possible actions
 
-                    self.values[stateAtIndex] = bestValue
-
-
-                
-
-
-            
-            
-            
-
-            
-
-        
+                self.values[state] = bestValue
         # for i in self.mdp.getStates():
         #     states.append(i)
         #     values[states[i]] = 0
