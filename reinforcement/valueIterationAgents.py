@@ -202,9 +202,16 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
     def runValueIteration(self):
+         
+        # Do we need to initialise everything to 0 first?
+        # index is needed for the circular update in teh iterations 
+        index = 0
+        for i in self.mdp.getStates():
+            
+            
 
-        states = []
-        
+            
+
         
         # for i in self.mdp.getStates():
         #     states.append(i)
