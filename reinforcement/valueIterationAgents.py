@@ -205,23 +205,23 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
 
         states = []
         
-        for i in self.mdp.getStates():
-            states.append(i)
-            values[states[i]] = 0
+        # for i in self.mdp.getStates():
+        #     states.append(i)
+        #     values[states[i]] = 0
 
-        for i in range(0,self.iterations):
-            oldValues = util.Counter()
-            bestValue = -9999
+        # for i in range(0,self.iterations):
+        #     oldValues = util.Counter()
+        #     bestValue = -9999
 
-            for action in self.mdp.getPossibleActions(states[i]):
-                value = self.computeQValueFromValues(states[i],action)
+        #     for action in self.mdp.getPossibleActions(states[i]):
+        #         value = self.computeQValueFromValues(states[i],action)
 
-                if value > bestValue:
-                    bestValue = value
+        #         if value > bestValue:
+        #             bestValue = value
 
-                oldValues[states[i]] = bestValue
+        #         oldValues[states[i]] = bestValue
 
-            self.values = oldValues
+        #     self.values = oldValues
                 # # return the best possible q value 
                 # bestValue = -9999
                 # for action in self.mdp.getPossibleActions(states):
