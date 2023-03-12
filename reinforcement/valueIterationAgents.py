@@ -209,9 +209,24 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
         statesLen = len(states)
         stateAtIndex = 0
         for i in range(0,self.iterations):
+            print(stateAtIndex)
             stateAtIndex = states[stateAtIndex % statesLen]
-            if 
-                print(stateIndex)
+        
+            if self.mdp.isTerminal(stateAtIndex) == False:
+                legalActions = self.mdp.getPossibleActions(stateAtIndex)
+                bestValue = -9999
+                for action in legalActions:
+                    value = self.computeQValueFromValues(stateAtIndex,action)
+                    if bestValue < value:
+                        bestValue = value
+                    # All the best Values from state to that particular action
+                    # computeActionFRomValues will supposedly be used to find the best action for the 
+                    # bestValues of all the possible actions
+
+                    self.values[stateAtIndex] = bestValue
+
+
+                
 
 
             
