@@ -205,6 +205,7 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
 
         states = []
         
+        
         # for i in self.mdp.getStates():
         #     states.append(i)
         #     values[states[i]] = 0
