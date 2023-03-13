@@ -287,14 +287,37 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
     def runValueIteration(self):
         # Part 1- Finding all the predecessors:
         # for state in self.mdp.getStates():
+
+        # Consider terminal states?
         self.predecessors = set()
         for states in self.mdp.getStates():
-            for action in self.mdp.getPossibleActions(states):
-                for pair in self.mdp.getTransitionStatesAndProbs(states, action):
-                    print(pair)
-                    if pair[1] > 0:
-                        self.predecessors.add(pair[0])
+            if self.mdp.isTerminal(states) ==  False: 
+                for action in self.mdp.getPossibleActions(states):
+                    for pair in self.mdp.getTransitionStatesAndProbs(states, action):
+                        # print(pair)
+                        if pair[1] > 0:
+                            self.predecessors.add(pair[0])
         print(self.predecessors)
+
+        # Part 2 - Initialise an empty priority queue
+        priorityQ = util.PriorityQueue()
+
+        for state in self.mdp.getStates():
+            diff = 0
+            if self.mdp.isTerminal(state) ==  False:
+                highestQvalue = -99999
+
+                actions = self.mdp.getPossibleActions(state)
+                for action in actions:
+                    qValue = self.computeQValueFromValues(state,action)
+                    if qValue > highestQvalue:
+                       highestQvalue = qValue
+                diff = abs(self.getValue(state) - highestQvalue)
+            priorityQ.update(state,-diff)
+            print(priorityQ)
+
+        
+
 
 
         # For each non-terminal state, compute the abs difference between current values and the highest q value across all possible actions from s - Diff
