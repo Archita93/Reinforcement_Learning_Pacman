@@ -1,0 +1,5 @@
+Resources used:
+https://towardsdatascience.com/implement-value-iteration-in-python-a-minimal-working-example-f638907f3437
+https://www.youtube.com/watch?v=hUqeGLkx_zs&t=253s
+For third part of q5, rest were practiced and implemented
+http://incompleteideas.net/book/ebook/node98.html

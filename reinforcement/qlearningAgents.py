@@ -41,8 +41,9 @@ class QLearningAgent(ReinforcementAgent):
     def __init__(self, **args):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
-
+              
         "*** YOUR CODE HERE ***"
+        self.values = util.Counter() # A Counter is a dict with default 0   
 
     def getQValue(self, state, action):
         """
@@ -51,6 +52,9 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
+        qvalue = self.values[(state,action)]
+        return qvalue
+
         util.raiseNotDefined()
 
 
@@ -62,6 +66,21 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
+        bestQValue = -9999
+        
+        actions = self.getLegalActions(state)
+        lenActions = len(actions)
+
+        if lenActions != 0:
+          for action in actions:
+            qValue = self.values[(state,action)] 
+            if qValue > bestQValue:
+              bestQValue = qValue
+          return bestQValue
+        
+        else:
+          return 0.0
+
         util.raiseNotDefined()
 
     def computeActionFromQValues(self, state):
@@ -71,6 +90,23 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
+        bestQValue = -9999
+        bestAction = None
+        
+        actions = self.getLegalActions(state)
+        lenActions = len(actions)
+
+        if lenActions != 0:
+          for action in actions:
+            qValue = self.values[(state,action)] 
+            if qValue > bestQValue:
+              bestQValue = qValue
+              bestAction = action
+          return bestAction
+        
+        else:
+          return None
+
         util.raiseNotDefined()
 
     def getAction(self, state):
@@ -88,6 +124,8 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
+        # if 
+        print(util.flipCoin(self.epsilon))
         util.raiseNotDefined()
 
         return action
