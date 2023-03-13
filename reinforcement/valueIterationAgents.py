@@ -69,33 +69,42 @@ class ValueIterationAgent(ValueEstimationAgent):
         "*** YOUR CODE HERE ***"
         # Aim: is to update the value of each element 
         # Write value iteration code here
-       
-        for i in range(0,self.iterations):
+        
+        # use a while loop to iterate through the number of iterations
+        numIterations = self.iterations
+        
+        # initialised the index to trace the iteration in the while loop
+        iterationIndex = 0
 
-            oldValues = util.Counter()
-
+        while iterationIndex < numIterations:
+            
+            # new dict is initialised where all the states have 0 value
+            newStates = util.Counter()
             states = self.mdp.getStates()
+
             for state in states:
 
-                # return the best possible q value 
-                bestValue = -9999
+                # maxvalue is initialised for comparison between all the possible q values
+                maxQValue = -9999                
                 actions = self.mdp.getPossibleActions(state)
+
                 for action in actions:
-                    value = self.computeQValueFromValues(state,action)
-                    # print("value: ", value)
-                    if bestValue < value:
-                        bestValue = value
-                    # All the best Values from state to that particular action
-                    # computeActionFRomValues will supposedly be used to find the best action for the 
-                    # bestValues of all the possible actions
+                    
+                    qValue = 0
+                    nextStates = self. mdp.getTransitionStatesAndProbs(state, action)
+                    
+                    for pairs in nextStates:
+                        probabilities = pairs[1]
+                        nextState = pairs[0]
+                        rewards = self.mdp.getReward(state,action,nextState)
+                        qValue +=  probabilities * (rewards + self.discount*(self.getValue(nextState)))
+                    
+                    if qValue > maxQValue:
+                        maxQValue = qValue
+                    newStates[state] = maxQValue
 
-                    oldValues[state] = bestValue
-            self.values = oldValues
-
-
-        # util.raiseNotDefined()
-
-
+            self.values = newStates
+            iterationIndex+=1
 
     def getValue(self, state):
         """
@@ -122,7 +131,6 @@ class ValueIterationAgent(ValueEstimationAgent):
             probabilities = pairs[1]
             nextState = pairs[0]
             rewards = self.mdp.getReward(state,action,nextState)
-
             Q_value +=  probabilities * (rewards + self.discount*(self.getValue(nextState)))
         
         return Q_value
@@ -142,23 +150,22 @@ class ValueIterationAgent(ValueEstimationAgent):
         # THe best value could be computed using the q-value function 
         # compute Value = max (q-value)
         # AIM: to find the action associated with that value
-        bestValue = -99999
-        bestAction = None
+        maxQValue = -99999
+        qAction = None
 
         actions = self.mdp.getPossibleActions(state)
         for action in actions:
-            value = self.computeQValueFromValues(state,action)
+            qValue = self.computeQValueFromValues(state,action)
+            if qValue > maxQValue:
+                maxQValue = qValue
+                qAction = action
 
-            if bestValue < value:
-                bestValue = value
-                bestAction = action
-
-        return bestAction
-            # would be redundant and is not solving the problem, so
-            # for nextState in self.mdp.getTransitionStatesAndProbs(state,actions)[0]:
-            #     if bestValue < self.getValue(nextState):
-            #         bestValue = self.getValue(nextState)
-            #         bestAction = actions
+        return qAction
+        # would be redundant and is not solving the problem, so
+        # for nextState in self.mdp.getTransitionStatesAndProbs(state,actions)[0]:
+        #     if bestValue < self.getValue(nextState):
+        #         bestValue = self.getValue(nextState)
+        #         bestAction = actions
 
             
             # print("actions: ",actions)
@@ -208,8 +215,11 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
        
         states = self.mdp.getStates()
         statesLen = len(states)
-        for i in range(0,self.iterations):
-            stateIndex = i % statesLen
+        numIterations = self.iterations
+        iterationIndex = 0
+
+        while iterationIndex < numIterations:
+            stateIndex = iterationIndex % statesLen
             state = states[stateIndex]
         
             if self.mdp.isTerminal(state) == False:
@@ -224,6 +234,7 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
                     # bestValues of all the possible actions
 
                 self.values[state] = bestValue
+            iterationIndex+=1
         # for i in self.mdp.getStates():
         #     states.append(i)
         #     values[states[i]] = 0
@@ -274,5 +285,20 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
     def runValueIteration(self):
+        # Part 1- Finding all the predecessors:
+        for state in self.mdp.getStates():
+            predecessors = set()
+            for predStates in self.mdp.getStates():
+                for action in self.mdp.getPossibleActions(predStates):
+                    pairs = self.mdp.getTransitionStatesAndProbs(predStates, action)
+                    if pairs[0] == state:
+                        if pairs[1] > 0:
+                            predecessors.add(predStates)
+            print(predecessors)
+
+
+        # For each non-terminal state, compute the abs difference between current values and the highest q value across all possible actions from s - Diff
+        # Push s into the priority qeuee with rpiority as diff
+         
         "*** YOUR CODE HERE ***"
 
