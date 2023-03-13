@@ -297,7 +297,7 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
                         # print(pair)
                         if pair[1] > 0:
                             self.predecessors.add(pair[0])
-        print(self.predecessors)
+        # print(self.predecessors)
 
         # Part 2 - Initialise an empty priority queue
         priorityQ = util.PriorityQueue()
@@ -306,17 +306,48 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
             diff = 0
             if self.mdp.isTerminal(state) ==  False:
                 highestQvalue = -99999
-
                 actions = self.mdp.getPossibleActions(state)
                 for action in actions:
                     qValue = self.computeQValueFromValues(state,action)
                     if qValue > highestQvalue:
                        highestQvalue = qValue
                 diff = abs(self.getValue(state) - highestQvalue)
-            priorityQ.update(state,-diff)
-            print(priorityQ)
+            priorityQ.update(state,(-1)*diff)
+            # print(priorityQ)
 
-        
+        # Part 3 - 
+        iterationIndex = 0
+        numIterations = self.iterations
+        while (iterationIndex < numIterations):
+            if priorityQ.isEmpty() == True:
+                break
+            removedState = priorityQ.pop()
+            if self.mdp.isTerminal(removedState) == False:
+                # Update value to the highest q value
+                bestValue = -99999
+                actions = self.mdp.getPossibleActions(removedState)
+                for action in actions:
+                    value = self.computeQValueFromValues(state,action)
+                    if value > bestValue:
+                       bestValue = value
+                self.values[removedState] = bestValue
+                for pred in self.predecessors:
+                    diff2 = 0
+                    bestValue2 = -99999
+                    actions2 = self.mdp.getPossibleActions(pred)
+                    for action in actions2:
+                        value2 = self.computeQValueFromValues(pred,action)
+                        if value2 > bestValue2:
+                           bestValue2 = value2
+                    diff2 = abs(self.getValue(pred) - bestValue2)
+
+                    if diff2 > self.theta:
+                        priorityQ.update(pred,(-1)*diff2)
+            iterationIndex+=1
+
+
+            
+
 
 
 
