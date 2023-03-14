@@ -223,10 +223,13 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        QValue = 0
+        sum = 0
+        
         features = self.featExtractor.getFeatures(state,action)
+        # print(features[1])
         print(features)
-        print(self.weights)
+        sum += features[1]*self.weights[features[1]]
+ 
         # for feature in features:
         #    self.weights[feature[1]] = 0.0
         #    print(self.weights)
@@ -236,12 +239,12 @@ class ApproximateQAgent(PacmanQAgent):
         #   print(self.featExtractor.getFeatures(state,action))
 
         
-        for w in self.weights:
-          QValue += w*w[self.featExtractor.getFeatures(state,action)]
-        print(QValue)
-        print(self.weights)
+        # for w in self.weights:
+        #   QValue += w*w[self.featExtractor.getFeatures(state,action)]
+        # print(QValue)
+        # print(self.weights)
 
-        return QValue
+        return sum
         
         util.raiseNotDefined()
 
@@ -250,7 +253,7 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        print("hi", self.featExtractor.getFeatures(state,action).key)
+        # print("hi", self.featExtractor.getFeatures(state,action).key)
         # currentValue = self.values[(state,action)]
         # learningRate = self.alpha
         # gamma = self.discount
@@ -259,10 +262,11 @@ class ApproximateQAgent(PacmanQAgent):
         nextValue = self.getQValue(nextState,self.getAction(nextState))
         Value = self.getQValue(state,action)
         difference = (reward + self.discount* nextValue) - Value
+        features = self.featExtractor.getFeatures(state,action)
 
-        self.weights[self.featExtractor[(state,action)]] = self.weights[self.featExtractor[(state,action)]] + self.alpha*difference*self.featExtractor[(state,action)]
+        self.weights[features[1]] = self.weights[features[1]] + self.alpha*difference*features[1]
                                                                  
-        util.raiseNotDefined()
+        # util.raiseNotDefined()
 
     def final(self, state):
         "Called at the end of each game."
