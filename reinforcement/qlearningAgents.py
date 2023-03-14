@@ -223,14 +223,17 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        weights = {}
         QValue = 0
+        print(self.featExtractor.getFeatures(state,action))
+        for feature in self.featExtractor.getFeatures(state,action):
+          self.featExtractor.getFeatures(state,action)[self.getWeights] = self.weights
+          print(self.featExtractor.getFeatures(state,action))
 
-        for weight in self.weights:
-          weights[self.featExtractor] = weight
         
-        for w in weights:
-          QValue += w*w[self.featExtractor]
+        for w in self.weights:
+          QValue += w*w[self.featExtractor.getFeatures(state,action)]
+        print(QValue)
+        print(self.weights)
 
         return QValue
         
@@ -241,7 +244,7 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        print( self.featExtractor.getFeatures(state,action))
+        print("hi", self.featExtractor.getFeatures(state,action).key)
         # currentValue = self.values[(state,action)]
         # learningRate = self.alpha
         # gamma = self.discount
