@@ -73,7 +73,7 @@ class QLearningAgent(ReinforcementAgent):
 
         if lenActions != 0:
           for action in actions:
-            qValue = self.values[(state,action)] 
+            qValue = self.getQValue(state,action)
             if qValue > bestQValue:
               bestQValue = qValue
           return bestQValue
@@ -98,7 +98,7 @@ class QLearningAgent(ReinforcementAgent):
 
         if lenActions != 0:
           for action in actions:
-            qValue = self.values[(state,action)] 
+            qValue = self.getQValue(state,action)
             if qValue > bestQValue:
               bestQValue = qValue
               bestAction = action
@@ -152,8 +152,13 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        self.values[(state,action)] = self.values[(state,action)] + self.alpha
-        util.raiseNotDefined()
+        currentValue = self.values[(state,action)]
+        learningRate = self.alpha
+        gamma = self.discount
+        nextBestAction = self.computeValueFromQValues(nextState)
+        self.values[(state,action)] = currentValue +  learningRate*(reward + gamma*nextBestAction - currentValue)
+                                                                 
+        # util.raiseNotDefined()
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
