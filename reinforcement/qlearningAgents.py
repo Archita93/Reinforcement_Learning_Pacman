@@ -67,19 +67,27 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
+        # Initialised bestQValue to find the action with the maximum q value
         bestQValue = -9999
         
+        # Listed out all the possible actions
         actions = self.getLegalActions(state)
+
+        # Found the length of the actions tuple
         lenActions = len(actions)
         qValue = 0.0
-
+         
+        # If there are legal actions left 
         if lenActions != 0:
+          # For all actions, qvalue was calculated and then compared to the bestQValue
           for action in actions:
             qValue = self.getQValue(state,action)
             if qValue > bestQValue:
               bestQValue = qValue
+            
           return bestQValue
         
+        # IF there are 0 legal actions left
         else:
           return 0.0
 
@@ -92,12 +100,16 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
+
+        # Initialised bestAction and bestQValue to compare
         bestQValue = -9999
         bestAction = None
         
+        # Find the length of actions
         actions = self.getLegalActions(state)
         lenActions = len(actions)
-
+        
+        # If there are legal actions left
         if lenActions != 0:
           for action in actions:
             qValue = self.getQValue(state,action)
@@ -106,6 +118,7 @@ class QLearningAgent(ReinforcementAgent):
               bestAction = action
           return bestAction
         
+        # If there are no legal actions left
         else:
           return None
 
@@ -125,17 +138,22 @@ class QLearningAgent(ReinforcementAgent):
         # Pick Action
         legalActions = self.getLegalActions(state)
         action = None
-        "*** YOUR CODE HERE ***"    
-        actionLen = len(legalActions)
+        "*** YOUR CODE HERE ***"  
 
+
+        actionLen = len(legalActions)
+        # if there are no legal actions left
         if actionLen == 0 :
           return action
         
+        # flipped will be a boolean value
         flipped = util.flipCoin(self.epsilon)
-
+        
+        # If flipped is true then perform exploration
         if flipped == True:
           action = random.choice(legalActions)
-
+        
+        # else, perform exploitation: follow policy
         else:
           action = self.computeActionFromQValues(state) # or getPolicy
 
@@ -154,6 +172,8 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
+
+        # Used the formula to update the values dict
         currentValue = self.values[(state,action)]
         learningRate = self.alpha
         gamma = self.discount
@@ -223,7 +243,8 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        return self.featExtractor.getFeatures(state,action)*self.weights
+        # returned the dot product of features and weights
+        return (self.featExtractor.getFeatures(state,action)*self.weights)
     
         # Previosu implementations: 
         # sum = 0
@@ -253,15 +274,19 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-       
+        # Followed the formula to update the weightvalues
         nextValue = self.getValue(nextState)
-        Value = self.getQValue(state,action)
-        difference = (reward + self.discount* nextValue) - Value
+        value = self.getQValue(state,action)
+        discount = self.discount
+        alpha = self.alpha
         features = self.featExtractor.getFeatures(state,action)
+        difference = (reward + discount* nextValue) - value
 
         # self.weights[features[1]] = self.weights[features[1]] + self.alpha*difference*features[1]
         for feature in features:
-          self.weights[feature] = self.weights[feature] + self.alpha*difference*features[feature]
+          weightValue = self.weights[feature]
+          featureValue = features[feature]
+          weightValue = weightValue + (alpha*difference*featureValue)
                                                                  
         # util.raiseNotDefined()
         # Took inspiration from previous implementation
