@@ -224,10 +224,16 @@ class ApproximateQAgent(PacmanQAgent):
         """
         "*** YOUR CODE HERE ***"
         QValue = 0
-        print(self.featExtractor.getFeatures(state,action))
-        for feature in self.featExtractor.getFeatures(state,action):
-          self.featExtractor.getFeatures(state,action)[self.getWeights] = self.weights
-          print(self.featExtractor.getFeatures(state,action))
+        features = self.featExtractor.getFeatures(state,action)
+        print(features)
+        print(self.weights)
+        # for feature in features:
+        #    self.weights[feature[1]] = 0.0
+        #    print(self.weights)
+        # print(self.featExtractor.getFeatures(state,action))
+        # for feature in self.featExtractor.getFeatures(state,action):
+        #   self.featExtractor.getFeatures(state,action)[self.getWeights] = self.weights
+        #   print(self.featExtractor.getFeatures(state,action))
 
         
         for w in self.weights:
