@@ -572,7 +572,7 @@ def getProbability(value, distribution, values):
 
 def flipCoin(p):
     r = random.random()
-    print(r)
+    # print(r)
     return r < p
 
 
