@@ -291,11 +291,14 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
 
         # Consider terminal states?
         self.predecessors = set()
-
-        for states in self.mdp.getStates():
-            if self.mdp.isTerminal(states) ==  False: 
-                for action in self.mdp.getPossibleActions(states):
-                    for pair in self.mdp.getTransitionStatesAndProbs(states, action):
+        states = self.mdp.getStates()
+        for state in states:
+            isTerminal = self.mdp.isTerminal(state)
+            if isTerminal ==  False: 
+                actions = self.mdp.getPossibleActions(state)
+                for action in actions:
+                    statesAndProbsPairs = self.mdp.getTransitionStatesAndProbs(state, action)
+                    for pair in statesAndProbsPairs:
                         # print(pair)
                         if pair[1] > 0:
                             self.predecessors.add(pair[0])
@@ -303,11 +306,13 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
 
         # Part 2 - Initialise an empty priority queue
         
-        for state in self.mdp.getStates():
+        states = self.mdp.getStates()
+        for state in states:
 
             diff = 0
-
-            if self.mdp.isTerminal(state) ==  False:
+            
+            isTerminal = self.mdp.isTerminal(state)
+            if isTerminal ==  False:
 
                 highestQvalue = -99999
                 actions = self.mdp.getPossibleActions(state)
@@ -325,7 +330,8 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
         # Part 3 - 
         iterationIndex = 0
         numIterations = self.iterations
-
+        theta = self.theta
+        
         while (iterationIndex < numIterations):
 
             if priorityQ.isEmpty() == True:
@@ -350,7 +356,8 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
                     diff2 = 0
                     bestValue2 = -99999
                     actions2 = self.mdp.getPossibleActions(pred)
-                    if self.mdp.isTerminal(pred) == False:
+                    isTerminal = self.mdp.isTerminal(pred)
+                    if isTerminal == False:
                         
                         for action in actions2:
                             value2 = self.computeQValueFromValues(pred,action)
@@ -359,19 +366,14 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
 
                         diff2 = abs(self.getValue(pred) - bestValue2)
 
-                        if diff2 > self.theta:
+                        if diff2 > theta:
                             priorityQ.update(pred,-diff2)
                             
             iterationIndex+=1
 
 
-            
-
-
-
-
         # For each non-terminal state, compute the abs difference between current values and the highest q value across all possible actions from s - Diff
-        # Push s into the priority qeuee with rpiority as diff
+        # Push s into the priority qeuee with priority as diff
          
         "*** YOUR CODE HERE ***"
 

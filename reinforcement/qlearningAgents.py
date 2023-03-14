@@ -178,7 +178,7 @@ class QLearningAgent(ReinforcementAgent):
         learningRate = self.alpha
         gamma = self.discount
         nextBestAction = self.computeValueFromQValues(nextState)
-        self.values[(state,action)] = currentValue +  learningRate*(reward + gamma*nextBestAction - currentValue)
+        self.values[(state,action)] = currentValue +  learningRate*(reward + (gamma*nextBestAction) - currentValue)
                                                                  
         # util.raiseNotDefined()
 
@@ -244,7 +244,7 @@ class ApproximateQAgent(PacmanQAgent):
         """
         "*** YOUR CODE HERE ***"
         # returned the dot product of features and weights
-        return (self.featExtractor.getFeatures(state,action)*self.weights)
+        return self.featExtractor.getFeatures(state,action)*self.weights
     
         # Previosu implementations: 
         # sum = 0
@@ -276,17 +276,14 @@ class ApproximateQAgent(PacmanQAgent):
         "*** YOUR CODE HERE ***"
         # Followed the formula to update the weightvalues
         nextValue = self.getValue(nextState)
-        value = self.getQValue(state,action)
-        discount = self.discount
-        alpha = self.alpha
+        Value = self.getQValue(state,action)
+        difference = (reward + self.discount* nextValue) - Value
         features = self.featExtractor.getFeatures(state,action)
-        difference = (reward + discount* nextValue) - value
-
         # self.weights[features[1]] = self.weights[features[1]] + self.alpha*difference*features[1]
         for feature in features:
-          weightValue = self.weights[feature]
-          featureValue = features[feature]
-          weightValue = weightValue + (alpha*difference*featureValue)
+          self.weights[feature] = self.weights[feature] + self.alpha*difference*features[feature]
+
+
                                                                  
         # util.raiseNotDefined()
         # Took inspiration from previous implementation
