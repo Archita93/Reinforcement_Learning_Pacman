@@ -53,6 +53,7 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         qvalue = self.values[(state,action)]
+        # print(qvalue)
         return qvalue
 
         util.raiseNotDefined()
@@ -70,6 +71,7 @@ class QLearningAgent(ReinforcementAgent):
         
         actions = self.getLegalActions(state)
         lenActions = len(actions)
+        qValue = 0.0
 
         if lenActions != 0:
           for action in actions:
@@ -126,7 +128,7 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"    
         actionLen = len(legalActions)
 
-        if actionLen == 0:
+        if actionLen == 0 :
           return action
         
         flipped = util.flipCoin(self.epsilon)
