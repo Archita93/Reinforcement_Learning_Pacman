@@ -224,15 +224,16 @@ class ApproximateQAgent(PacmanQAgent):
         """
         "*** YOUR CODE HERE ***"
         weights = {}
+        QValue = 0
+
         for weight in self.weights:
           weights[self.featExtractor] = weight
         
-        print(weights)
+        for w in weights:
+          QValue += w*w[self.featExtractor]
 
-
-
+        return QValue
         
-
         util.raiseNotDefined()
 
     def update(self, state, action, nextState, reward):
@@ -240,6 +241,19 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
+        # currentValue = self.values[(state,action)]
+        # learningRate = self.alpha
+        # gamma = self.discount
+        # nextBestAction = self.computeValueFromQValues(nextState)
+        # self.values[(state,action)] = currentValue +  learningRate*(reward + gamma*nextBestAction - currentValue)
+        nextValue = self.getQValue(nextState,self.getAction(nextState))
+        Value = self.getQValue(state,action)
+        difference = (reward + self.discount* nextValue) - Value
+
+        self.weights[self.featExtractor] = self.weights[self.featExtractor] + self.alpha*difference*self.featExtractor
+                                                                 
+
+
         util.raiseNotDefined()
 
     def final(self, state):
