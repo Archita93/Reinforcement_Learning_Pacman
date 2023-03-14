@@ -224,11 +224,10 @@ class ApproximateQAgent(PacmanQAgent):
         """
         "*** YOUR CODE HERE ***"
         weights = {}
-        for feature in self.featExtractor:
-          weights[feature] = self.weights
+        for weight in self.weights:
+          weights[self.featExtractor] = weight
         
-        # sum = 0
-        # sum += weights
+        print(weights)
 
 
 
