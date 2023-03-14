@@ -223,6 +223,9 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
+        return self.featExtractor.getFeatures(state,action)*self.weights
+    
+        # Previosu implementations: 
         # sum = 0
         
         # features = self.featExtractor.getFeatures(state,action)
@@ -242,8 +245,6 @@ class ApproximateQAgent(PacmanQAgent):
         #   QValue += w*w[self.featExtractor.getFeatures(state,action)]
         # print(QValue)
         # print(self.weights)
-
-        return self.featExtractor.getFeatures(state,action)*self.weights
         
         util.raiseNotDefined()
 
@@ -252,12 +253,7 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        # print("hi", self.featExtractor.getFeatures(state,action).key)
-        # currentValue = self.values[(state,action)]
-        # learningRate = self.alpha
-        # gamma = self.discount
-        # nextBestAction = self.computeValueFromQValues(nextState)
-        # self.values[(state,action)] = currentValue +  learningRate*(reward + gamma*nextBestAction - currentValue)
+       
         nextValue = self.getValue(nextState)
         Value = self.getQValue(state,action)
         difference = (reward + self.discount* nextValue) - Value
@@ -268,6 +264,13 @@ class ApproximateQAgent(PacmanQAgent):
           self.weights[feature] = self.weights[feature] + self.alpha*difference*features[feature]
                                                                  
         # util.raiseNotDefined()
+        # Took inspiration from previous implementation
+        # print("hi", self.featExtractor.getFeatures(state,action).key)
+        # currentValue = self.values[(state,action)]
+        # learningRate = self.alpha
+        # gamma = self.discount
+        # nextBestAction = self.computeValueFromQValues(nextState)
+        # self.values[(state,action)] = currentValue +  learningRate*(reward + gamma*nextBestAction - currentValue)
 
     def final(self, state):
         "Called at the end of each game."
