@@ -223,15 +223,14 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        sum = 0
+        # sum = 0
         
-        features = self.featExtractor.getFeatures(state,action)
-        # print(features[1])
-        print(features)
-        sum += features[1]*self.weights[features[1]]
- 
+        # features = self.featExtractor.getFeatures(state,action)
+        # # print(features[1])
         # for feature in features:
-        #    self.weights[feature[1]] = 0.0
+        #   sum += features[feature]*self.weights[feature]
+          
+           
         #    print(self.weights)
         # print(self.featExtractor.getFeatures(state,action))
         # for feature in self.featExtractor.getFeatures(state,action):
@@ -244,7 +243,7 @@ class ApproximateQAgent(PacmanQAgent):
         # print(QValue)
         # print(self.weights)
 
-        return sum
+        return self.featExtractor.getFeatures(state,action)*self.weights
         
         util.raiseNotDefined()
 
@@ -259,12 +258,14 @@ class ApproximateQAgent(PacmanQAgent):
         # gamma = self.discount
         # nextBestAction = self.computeValueFromQValues(nextState)
         # self.values[(state,action)] = currentValue +  learningRate*(reward + gamma*nextBestAction - currentValue)
-        nextValue = self.getQValue(nextState,self.getAction(nextState))
+        nextValue = self.getValue(nextState)
         Value = self.getQValue(state,action)
         difference = (reward + self.discount* nextValue) - Value
         features = self.featExtractor.getFeatures(state,action)
 
-        self.weights[features[1]] = self.weights[features[1]] + self.alpha*difference*features[1]
+        # self.weights[features[1]] = self.weights[features[1]] + self.alpha*difference*features[1]
+        for feature in features:
+          self.weights[feature] = self.weights[feature] + self.alpha*difference*features[feature]
                                                                  
         # util.raiseNotDefined()
 
